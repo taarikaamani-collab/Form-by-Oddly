@@ -8,6 +8,14 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f2e6d8'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' font-weight='700' fill='%236b4028' text-anchor='middle'%3EF%3C/text%3E%3C/svg%3E">
 
+<!-- Progressive enhancement flag: flips content from "always visible"
+     (the safe default, in case script is blocked/stripped by whatever
+     is opening this file) to "animate in on scroll" the moment we know
+     JS actually ran. Must run before the stylesheet below is applied,
+     so it sits first and inline. See the .reveal rules in the stylesheet
+     and the matching guard in the closing <script> block. -->
+<script>document.documentElement.classList.add("js");</script>
+
 <!--
   FORMÉ BY ODDLY — personalised wardrobe guide
   ------------------------------------------------------------------
@@ -271,21 +279,27 @@ p.body, .body-copy{
 
 /* ============================================================
    4. MOTION — SCROLL REVEAL
-   ============================================================ */
-.reveal{
+   ============================================================
+   Content is visible by default (no ".js" on <html>). Only once the
+   inline script in <head> has confirmed JS actually ran do these
+   elements drop to their pre-animation state and wait for the
+   IntersectionObserver in the closing <script> to reveal them. This
+   means the page can never render blank — worst case (JS blocked or
+   stripped) is simply no scroll animation. */
+html.js .reveal{
   opacity: 0;
   transform: translateY(34px);
   transition: opacity .9s var(--ease-out), transform .9s var(--ease-out);
   transition-delay: var(--delay, 0s);
 }
-.reveal--left{ transform: translate(-42px, 0); }
-.reveal--right{ transform: translate(42px, 0); }
-.reveal--scale{ transform: scale(.94); }
-.reveal--fade{ transform: none; }
-.reveal.is-visible{ opacity: 1; transform: none; }
+html.js .reveal--left{ transform: translate(-42px, 0); }
+html.js .reveal--right{ transform: translate(42px, 0); }
+html.js .reveal--scale{ transform: scale(.94); }
+html.js .reveal--fade{ transform: none; }
+html.js .reveal.is-visible{ opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce){
-  .reveal, .reveal--left, .reveal--right, .reveal--scale{
+  html.js .reveal, html.js .reveal--left, html.js .reveal--right, html.js .reveal--scale{
     opacity: 1; transform: none; transition: none;
   }
 }
